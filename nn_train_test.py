@@ -126,16 +126,16 @@ def perform_k_nn_experiments(
     val_output = data_dict["val_output"]
     val_helpers = data_dict["val_helpers"]
 
-    # Merge train and val splits and use K-fold cross validation instead
-    train_val_input = np.concatenate((train_input, val_input))
-    train_val_output = np.concatenate((train_output, val_output))
-    train_val_helpers = np.concatenate([train_helpers, val_helpers])
+    # # Merge train and val splits and use K-fold cross validation instead
+    # train_val_input = np.concatenate((train_input, val_input))
+    # train_val_output = np.concatenate((train_output, val_output))
+    # train_val_helpers = np.concatenate([train_helpers, val_helpers])
 
     if args.use_map:
         print("####  Training Nearest Neighbor in NT frame  ###")
         model.train_and_infer_map(
-            train_val_input,
-            train_val_output,
+            train_input,
+            train_output,
             test_helpers,
             len(baseline_utils.BASELINE_INPUT_FEATURES[baseline_key]),
             args,
