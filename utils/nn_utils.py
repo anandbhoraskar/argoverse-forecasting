@@ -41,9 +41,12 @@ class Regressor:
         pipe = Pipeline(estimators)
 
         param_grid = dict(
-            preprocessing=[None, preprocessing.StandardScaler()],
-            reduce_dim=[None, PCA(32)],
-            regressor__n_neighbors=[1, 8, 16],
+            preprocessing=[None],
+            reduce_dim=[None],
+            regressor__n_neighbors=[16],
+            # preprocessing=[None, preprocessing.StandardScaler()],
+            # reduce_dim=[None, PCA(32)],
+            # regressor__n_neighbors=[1, 8, 16],
             regressor__weights=["distance"],
             regressor__n_jobs=[-2],
         )
