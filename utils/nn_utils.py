@@ -18,7 +18,52 @@ from sklearn.pipeline import Pipeline
 
 import utils.baseline_utils as baseline_utils
 
+from typing import Tuple
+
 PREDICTION_HORIZONS = [30]
+
+
+def get_mean_velocity(coords: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    """Get mean velocity of the observed trajectory.
+    Args:
+        coords: Coordinates for the trajectory
+    Returns:
+        Mean velocity along x and y
+    """
+    vx, vy = (
+        np.zeros((coords.shape[0], coords.shape[1] - 1)),
+        np.zeros((coords.shape[0], coords.shape[1] - 1)),
+    )
+
+    for i in range(1, coords.shape[1]):
+        vx[:, i - 1] = (coords[:, i, 0] - coords[:, i - 1, 0]) / 0.1
+        vy[:, i - 1] = (coords[:, i, 1] - coords[:, i - 1, 1]) / 0.1
+    vx = np.mean(vx, axis=1)
+    vy = np.mean(vy, axis=1)
+
+    return vx, vy
+
+
+def predict(obs_trajectory: np.ndarray, vx: np.ndarray, vy: np.ndarray,
+            args: Any) -> np.ndarray:
+    """Predict future trajectory given mean velocity.
+    Args:
+        obs_trajectory: Observed Trajectory
+        vx: Mean velocity along x
+        vy: Mean velocity along y
+        args: Arguments to the baseline
+    Returns:
+        pred_trajectory: Future trajectory
+    """
+    pred_trajectory = np.zeros((obs_trajectory.shape[0], args.pred_len, 2))
+
+    prev_coords = obs_trajectory[:, -1, :]
+    for i in range(args.pred_len):
+        pred_trajectory[:, i, 0] = prev_coords[:, 0] + vx * 0.1
+        pred_trajectory[:, i, 1] = prev_coords[:, 1] + vy * 0.1
+        prev_coords = pred_trajectory[:, i]
+
+    return pred_trajectory
 
 
 class Regressor:
@@ -296,11 +341,19 @@ class Regressor:
 
                 # y_pred = train_output[neigh_idx][
                 #     0, :, :horizon, :]  # num_neighbors x curr_pred_len x 2
-                
+
+                a = test_input.copy().reshape(20, 2)
+                v = (a[1:]-a[:-1]).mean(0)
+                p1 = np.tile(np.linspace(0, 1, 30), (2,1)).T.reshape(30,2)
+                p1 = np.array([0.9*p1, p1, 1.1*p1])
+                p1 *= v
+                p1 += a[-1]
+
+                y_pred = p1
+
                 test_input = np.repeat(test_input,
-                                       repeats=args.n_neigh,
+                                       repeats=3,
                                        axis=0)
-                y_pred = np.zeros((args.n_neigh, args.pred_len, 2))
 
                 abs_helpers = {}
                 abs_helpers["CENTERLINE"] = [

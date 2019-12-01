@@ -47,29 +47,29 @@ def get_data(args: Any, baseline_key: str
     else:
         test_input, test_output, test_df = [None] * 3
 
-    if args.train_features:
-        print("Loading Train data ...")
-        train_input, train_output, train_df = load_and_preprocess_data(
-            input_features,
-            output_features,
-            args,
-            args.train_features,
-            mode="train")
-        print("Train Size: {}".format(train_input.shape[0]))
-    else:
-        train_input, train_output, train_df = [None] * 3
+    # if args.train_features:
+    #     print("Loading Train data ...")
+    #     train_input, train_output, train_df = load_and_preprocess_data(
+    #         input_features,
+    #         output_features,
+    #         args,
+    #         args.train_features,
+    #         mode="train")
+    #     print("Train Size: {}".format(train_input.shape[0]))
+    # else:
+    train_input, train_output, train_df = [None] * 3
 
-    if args.val_features:
-        print("Loading Val data ...")
-        val_input, val_output, val_df = load_and_preprocess_data(
-            input_features,
-            output_features,
-            args,
-            args.val_features,
-            mode="val")
-        print("Val Size: {}".format(val_input.shape[0]))
-    else:
-        val_input, val_output, val_df = [None] * 3
+    # if args.val_features:
+    #     print("Loading Val data ...")
+    #     val_input, val_output, val_df = load_and_preprocess_data(
+    #         input_features,
+    #         output_features,
+    #         args,
+    #         args.val_features,
+    #         mode="val")
+    #     print("Val Size: {}".format(val_input.shape[0]))
+    # else:
+    val_input, val_output, val_df = [None] * 3
 
     data_dict = {
         "train_input": train_input,
