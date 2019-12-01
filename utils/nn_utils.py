@@ -107,9 +107,10 @@ class Regressor:
 
         for curr_pred_horizon in PREDICTION_HORIZONS:
 
-            grid_search = baseline_utils.get_model(self, train_input,
-                                                   train_output, args,
-                                                   curr_pred_horizon)
+            # grid_search = baseline_utils.get_model(self, train_input,
+            #                                        train_output, args,
+            #                                        curr_pred_horizon)
+            grid_search = None
 
             print("Model obtained, now starting inference ...")
 
@@ -215,7 +216,7 @@ class Regressor:
 
     def infer_and_save_traj_map(
             self,
-            grid_search: Any,
+            grid_search: None,
             train_output: np.ndarray,
             test_nt: np.ndarray,
             test_centerlines: np.ndarray,
@@ -272,32 +273,34 @@ class Regressor:
                                                            2 * args.obs_len),
                                                           order="F")
 
-                # Preprocess and get neighbors
-                pipeline_steps = grid_search.best_estimator_.named_steps.keys()
-                preprocessed_test_input = np.copy(test_input)
-                for step in pipeline_steps:
-                    curr_step = grid_search.best_estimator_.named_steps[step]
+                # # Preprocess and get neighbors
+                # pipeline_steps = grid_search.best_estimator_.named_steps.keys()
+                # preprocessed_test_input = np.copy(test_input)
+                # for step in pipeline_steps:
+                #     curr_step = grid_search.best_estimator_.named_steps[step]
 
-                    # Get neighbors
-                    if step == "regressor":
-                        neigh_idx = curr_step.kneighbors(
-                            preprocessed_test_input,
-                            return_distance=False,
-                            n_neighbors=args.n_neigh,
-                        )
+                #     # Get neighbors
+                #     if step == "regressor":
+                #         neigh_idx = curr_step.kneighbors(
+                #             preprocessed_test_input,
+                #             return_distance=False,
+                #             n_neighbors=args.n_neigh,
+                #         )
 
-                    # Preprocess
-                    else:
-                        if curr_step is not None:
-                            print(preprocessed_test_input.shape)
-                            preprocessed_test_input = curr_step.transform(
-                                preprocessed_test_input)
+                #     # Preprocess
+                #     else:
+                #         if curr_step is not None:
+                #             print(preprocessed_test_input.shape)
+                #             preprocessed_test_input = curr_step.transform(
+                #                 preprocessed_test_input)
 
-                y_pred = train_output[neigh_idx][
-                    0, :, :horizon, :]  # num_neighbors x curr_pred_len x 2
+                # y_pred = train_output[neigh_idx][
+                #     0, :, :horizon, :]  # num_neighbors x curr_pred_len x 2
+                
                 test_input = np.repeat(test_input,
                                        repeats=args.n_neigh,
                                        axis=0)
+                y_pred = np.zeros((args.n_neigh, args.pred_len, 2))
 
                 abs_helpers = {}
                 abs_helpers["CENTERLINE"] = [
