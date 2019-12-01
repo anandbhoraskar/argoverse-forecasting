@@ -347,8 +347,8 @@ class Regressor:
                 v = (a[1:]-a[:-1]).mean(0)
                 p1 = np.tile(np.linspace(0, 1, 30), (2,1)).T.reshape(30,2)
                 p1 = np.array([0.9*p1, p1, 1.1*p1])
-                p1 *= v
-                p1 += a[-1]
+                p1 = p1*v
+                p1 = p1+a[-1]
                 p1 = p1.astype(int)
 
                 y_pred = p1
