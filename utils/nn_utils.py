@@ -137,10 +137,10 @@ class Regressor:
             f"Forecasted trajectories will be saved in {args.traj_save_path} ..."
         )
 
-        # Train and Test inputs for NN
-        train_num_tracks = train_input.shape[0]
-        train_input = train_input.reshape(
-            (train_num_tracks, args.obs_len * num_features), order="F")
+        # # Train and Test inputs for NN
+        # train_num_tracks = train_input.shape[0]
+        # train_input = train_input.reshape(
+        #     (train_num_tracks, args.obs_len * num_features), order="F")
 
         # Get test centerline
         test_centerlines = test_helpers["CANDIDATE_CENTERLINES"].values
@@ -156,6 +156,7 @@ class Regressor:
             #                                        train_output, args,
             #                                        curr_pred_horizon)
             grid_search = None
+            train_output = None
 
             print("Model obtained, now starting inference ...")
 
