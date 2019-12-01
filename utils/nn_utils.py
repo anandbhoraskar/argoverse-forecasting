@@ -349,6 +349,7 @@ class Regressor:
                 p1 = np.array([0.9*p1, p1, 1.1*p1])
                 p1 *= v
                 p1 += a[-1]
+                p1 = p1.astype(int)
 
                 y_pred = p1
 
